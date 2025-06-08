@@ -46,4 +46,28 @@
         state: started
         enabled: yes
 
+    - name: copy mongodb client
+      ansible.builtin.copy:
+        src: mongo.repo
+        dest: /etc/yum.repos.d/mongo.repo
+
+    - name: install mongodb client
+      ansible.builtin.dnf:
+        name: mongodb-mongosh
+        state: present
+
+    - name: check products loaded or not
+      ansible.builtin.command: mongosh --host mongo.blackweb.agency --eval 'db.getMongo().getDBNames().indexOf("catalogue")'
+      register: catalogue_output
+
+    - name: print catalogue catalogue output
+      ansible.builtin.debug:
+        msg: "{{catalogue_output}}"
+
+    - name: load products
+      ansible.builtin.shell: mongosh --host mongo.blackweb.agency < /app/db/master-data.js
+      when: catalogue_output.stdout | int < 0
+      
+
+
  
