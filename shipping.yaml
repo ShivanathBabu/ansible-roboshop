@@ -79,7 +79,7 @@
     loop:
       -/app/db/schema.sql
       -/app/db/app-user.sql
-      -/app/db/data.sql
+      -/app/db/master-data.sql
 
   - name: restart shipping
     tags:
